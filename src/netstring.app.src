@@ -1,0 +1,12 @@
+{application, netstring,
+ [
+  {description, "Module to wrap and unwrap binaries in netstring format"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { netstring, []}},
+  {env, []}
+ ]}.
