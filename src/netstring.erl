@@ -7,10 +7,10 @@
 -compile(export_all).
 -endif.
 
--record(continuation {
+-record(continuation, {
 	radix = 10 :: pos_integer(),
 	length = []:: [pos_integer()] | pos_integer(),
-	bin_so_far = <<>> | binary()
+	bin_so_far = <<>> :: binary()
 }).
 
 -type(netstring() :: binary()).
@@ -33,7 +33,7 @@ encode(Binary, Radix) when is_binary(Binary) ->
 encode(Binary, Radix) when is_binary(Binary) ->
 	encode([Binary], Radix);
 encode(Binaries, Radix) ->
-	encode(Binarys, Radix, Acc).
+	encode(Binaries, Radix, []).
 
 encode([], _Radix, Acc) ->
 	Out = lists:reverse(Acc),
@@ -54,7 +54,7 @@ decode(Binary) ->
 
 %% @doc Decode a binary as a netstring with a radix given; or the given
 %% continuation.
--spec(decode/1 :: (Binary :: binary(),
+-spec(decode/2 :: (Binary :: binary(),
 	RadixOrCont :: pos_integer() | #continuation{}) ->
 		{[binary()], #continuation{}}).
 decode(Binary, Radix) when is_integer(Radix) ->
