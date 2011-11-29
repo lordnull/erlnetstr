@@ -26,5 +26,8 @@ decode_test_() -> [
 		netstring:decode(<<"B:hello world,">>, 16)),
 
 	?_assertMatch({[<<"hello world">>, <<$!>>], _},
-		netstring:decode(<<"B:hello world,1:!,">>, 16))
+		netstring:decode(<<"B:hello world,1:!,">>, 16)),
+
+	?_assertMatch({[<<"hello world">>, <<$!>>, <<"yum">>], _},
+		netstring:decode(<<"11:hello world,1:!,3:yum,">>))
 ].
