@@ -64,6 +64,10 @@ decode(Binary, Radix) when is_integer(Radix) ->
 decode(Binary, Cont) when is_record(Cont, continuation) ->
 	decode(Binary, Cont, []).
 
+decode(<<>>, Cont, Acc) ->
+	OutAcc = lists:reverse(Acc),
+	{OutAcc, Cont};
+
 decode(Binary, #continuation{length = Len} = Cont, Acc) when is_integer(Len) ->
 	#continuation{radix = Rad, bin_so_far = BinSoFar} = Cont,
 	FullBin = <<BinSoFar/binary, Binary/binary>>,
@@ -82,4 +86,10 @@ decode(<<$:, Binary/binary>>, Cont, Acc) ->
 	#continuation{length = RawLen, radix = Radix, bin_so_far = OldBin} = Cont,
 	Len = list_to_integer(lists:reverse(RawLen), Radix),
 	NewCont = #continuation{radix = Radix, length = Len, bin_so_far = OldBin},
-	decode(Binary, NewCont, Acc).
+	decode(Binary, NewCont, Acc);
+
+decode(<<X/integer, Binary/binary>>, Cont, Acc) ->
+	#continuation{length = Len1} = Cont,
+	Len2 = [X | Len1],
+	Cont1 = Cont#continuation{length = Len2},
+	decode(Binary, Cont1, Acc).
