@@ -47,13 +47,15 @@ encode([Bin | Tail], Radix, Acc) ->
 	NewAcc = [NewBin | Acc],
 	encode(Tail, Radix, NewAcc).
 
-%% @doc Decode a binary as a netstring with a radix of 10.
+%% @doc Decode a binary as a netstring with a radix of 10.  For future
+%% decoding, `decode/2' should be used.
 -spec(decode/1 :: (Binary :: binary()) -> {[binary()], #continuation{}}).
 decode(Binary) ->
 	decode(Binary, 10).
 
 %% @doc Decode a binary as a netstring with a radix given; or the given
-%% continuation.
+%% continuation.  Each successive call to `decode/2' should use the 
+%% `#continuation{}' from the previous call to `decode/2'.
 -spec(decode/2 :: (Binary :: binary(),
 	RadixOrCont :: pos_integer() | #continuation{}) ->
 		{[binary()], #continuation{}}).
