@@ -9,22 +9,22 @@ Encoding
 ========
 
 Pass either a single binary or a list of binaries to one of the two encode
-functions.  <pre>encode/1</pre> uses the standard radix of 10.  Both
+functions.  `encode/1` uses the standard radix of 10.  Both
 return a binary.
 
 Decoding
 ========
 
 Decoding is a bit more complex due to the nature of streams of binaries.
-<pre>decode/1</pre> will get one started, but unless you are guaranteed
+`decode/1` will get one started, but unless you are guaranteed
 to always get one string at a time, is of limited use.
 
-Use <pre>decode/2</pre>, passing in the initial binary chunk of the stream,
+Use `decode/2`, passing in the initial binary chunk of the stream,
 and the radix to decode the stream.  The result is a tuple:
 
-<pre>{[binary()], #continuation{}}</pre>
+`{[binary()], #continuation{}}`
 
-For the next <pre>decode/2</pre> call, use the <pre>#continuation{}</pre>
-as the second argument.  Each successive call to <pre>decode/2</pre>
-should use the <pre>#continuation{}</pre> that was returned from the
-previous <pre>decode</pre>.
+For the next `decode/2` call, use the `#continuation{}`
+as the second argument.  Each successive call to `decode/2`
+should use the `#continuation{}` that was returned from the
+previous `decode`.
