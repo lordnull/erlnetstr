@@ -2,15 +2,14 @@ Installation / Including
 ========================
 
 Include as one would any other erlang application.  It's a simple library
-style, so there is nothing to start.  It uses rebar so it can be easily 
-included for other projects.
+style, so there is nothing to start.  Uses erlang.mk so anything with a
+`make` file should be able to integrate this fine.
 
 Encoding
 ========
 
-Pass either a single binary or a list of binaries to one of the two encode
-functions.  `encode/1` uses the standard radix of 10.  Both
-return a binary.
+Pass and `iolist()` to one of the two encode functions.  `encode/1` uses the
+standard radix of 10.  Both return an `iolist()`.
 
 Decoding
 ========
