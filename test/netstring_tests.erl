@@ -2,16 +2,16 @@
 -include_lib("eunit/include/eunit.hrl").
 
 encode_test_() -> [
-	?_assertEqual(<<"5:hello,">>,
+	?_assertEqual([<<"5">>, $:, <<"hello">>, $,],
 		netstring:encode(<<"hello">>)),
 
-	?_assertEqual(<<"5:hello,5:world,">>,
-		netstring:encode([<<"hello">>, <<"world">>])),
+	?_assertEqual([<<"11">>, $:, [<<"hello ">>, $w , "orld"], $,],
+		netstring:encode([<<"hello ">>, $w, "orld"])),
 
-	?_assertEqual(<<"B:hello world,">>,
+	?_assertEqual([<<"B">>, $:, <<"hello world">>, $,],
 		netstring:encode(<<"hello world">>, 16)),
 
-	?_assertEqual(<<"B:hello world,1:!,">>,
+	?_assertEqual([<<"C">>, $:, [<<"hello world">>, <<$!>>], $, ],
 		netstring:encode([<<"hello world">>, <<$!>>], 16))
 ].
 

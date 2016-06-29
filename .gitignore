@@ -7,3 +7,6 @@ ebin
 .eunit
 doc
 erlnetstr.d
+
+# test artifacts
+test/*.beam

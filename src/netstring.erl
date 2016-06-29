@@ -25,62 +25,38 @@
 
 -export([encode/1, encode/2, decode/1, decode/2]).
 
--ifdef(TEST).
--compile(export_all).
--endif.
-
 -record(continuation, {
 	radix = 10 :: pos_integer(),
 	length = []:: [pos_integer()] | pos_integer(),
 	bin_so_far = <<>> :: binary()
 }).
 
--type(netstring() :: binary()).
+-type netstring() :: iolist().
 
-%% @doc Encode a single binary, or a list of binaries with the default 
-%% radix of 10.
--spec(encode/1 :: (BinOrBins :: binary() | [binary()]) -> netstring()).
-encode(Binary) when is_binary(Binary) ->
-	encode([Binary]);
+%% @doc Encode a single iolist into an iolist netstring with the default radix
+%% of 10.
+-spec encode( Iolist :: iolist() ) -> netstring().
+encode(Iolist) ->
+	encode(Iolist, 10).
 
-encode(Bins) ->
-	encode(Bins, 10).
-
-%% @doc Encode a single binary, or a list of binaries, with the given
-%% radix.
--spec(encode/2 :: (BinOrBins :: binary() | [binary()], Radix :: pos_integer()) -> netstring()).
-encode(Binary, Radix) when is_binary(Binary) ->
-	encode([Binary], Radix);
-
-encode(Binary, Radix) when is_binary(Binary) ->
-	encode([Binary], Radix);
-encode(Binaries, Radix) ->
-	encode(Binaries, Radix, []).
-
-encode([], _Radix, Acc) ->
-	Out = lists:reverse(Acc),
-	list_to_binary(Out);
-
-encode([Bin | Tail], Radix, Acc) ->
-	Length = size(Bin),
-	NetLength = integer_to_list(Length, Radix),
-	LengthBin = list_to_binary(NetLength),
-	NewBin = <<LengthBin/binary, $:, Bin/binary, $,>>,
-	NewAcc = [NewBin | Acc],
-	encode(Tail, Radix, NewAcc).
+%% @doc Encode a single iolist with the given radix.
+-spec encode(Iolist :: iolist(), Radix :: pos_integer()) -> netstring().
+encode(Iolist, Radix) ->
+	Length = iolist_size(Iolist),
+	NetLength = integer_to_binary(Length, Radix),
+	[NetLength, $:, Iolist, $,].
 
 %% @doc Decode a binary as a netstring with a radix of 10.  For future
-%% decoding, `decode/2' should be used.
--spec(decode/1 :: (Binary :: binary()) -> {[binary()], #continuation{}}).
+%% decoding, `decode/2' should be used, passing in the second element of the
+%% return value.
+-spec decode(Binary :: binary()) -> {[binary()], #continuation{}}.
 decode(Binary) ->
 	decode(Binary, 10).
 
 %% @doc Decode a binary as a netstring with a radix given; or the given
 %% continuation.  Each successive call to `decode/2' should use the 
 %% `#continuation{}' from the previous call to `decode/2'.
--spec(decode/2 :: (Binary :: binary(),
-	RadixOrCont :: pos_integer() | #continuation{}) ->
-		{[binary()], #continuation{}}).
+-spec decode(Binary :: binary(), RadixOrCont :: pos_integer() | #continuation{}) -> {[binary()], #continuation{}}.
 decode(Binary, Radix) when is_integer(Radix) ->
 	Cont = #continuation{radix = Radix},
 	decode(Binary, Cont);
